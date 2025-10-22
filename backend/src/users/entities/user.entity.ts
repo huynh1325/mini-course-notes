@@ -21,9 +21,15 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column({ default: false})
-  isDeleted: boolean;
-
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @Column({ nullable: true })
+  createdBy: number;
+
+  @Column({ nullable: true })
+  updatedBy: number;
+
+  @Column({ nullable: true })
+  deletedBy: number;
 }

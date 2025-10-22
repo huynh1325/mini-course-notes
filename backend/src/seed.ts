@@ -77,3 +77,7 @@ async function seed() {
 }
 
 seed();
+
+//npx ts-node ./node_modules/typeorm/cli.js migration:generate ./src/migrations/Init --dataSource typeorm.config.ts
+//npx ts-node ./node_modules/typeorm/cli.js migration:run --dataSource typeorm.config.ts
+//npx ts-node src/seed.ts

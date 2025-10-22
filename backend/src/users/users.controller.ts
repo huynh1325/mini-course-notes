@@ -1,16 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ResponseMessage } from 'src/decorator/customize';
 
 @Controller('users')
-export class UsersController {
+export class UsersController  {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
+  // @Post()
+  // @ResponseMessage('Create a new User')
+  // async create(@Body() createUserDto: CreateUserDto, @Req() req) {
+  //   const createdBy = req.user?.id || null;
+  //   let newUser = await this.usersService.create(createUserDto, createdBy);
+  //   return {
+  //     id: newUser?.id,
+  //     createAt: newUser?.createdAt,
+  //   };
+  // }
 
   @Get()
   findAll() {
