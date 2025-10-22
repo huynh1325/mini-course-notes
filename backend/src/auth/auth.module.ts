@@ -6,20 +6,7 @@ import { JwtStrategy } from './passport/jwt.strategy';
 import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-
-function parseExpire(expireStr: string | undefined): number {
-  if (!expireStr) return 600;
-  const match = expireStr.match(/^(\d+)(s|m|h)$/);
-  if (!match) return 600; // fallback
-  const value = parseInt(match[1]);
-  const unit = match[2];
-  switch (unit) {
-    case 's': return value;
-    case 'm': return value * 60;
-    case 'h': return value * 3600;
-    default: return value;
-  }
-}
+import { parseExpire } from 'src/helpers/time';
 
 @Module({
   imports: [

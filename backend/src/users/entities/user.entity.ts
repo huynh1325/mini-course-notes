@@ -24,6 +24,9 @@ export class User {
   @DeleteDateColumn()
   deletedAt: Date;
 
+  @Column({ type: 'text', nullable: true })
+  refreshToken: string | null;
+
   @Column({ nullable: true })
   createdBy: number;
 

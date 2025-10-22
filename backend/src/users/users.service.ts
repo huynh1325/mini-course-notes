@@ -44,9 +44,17 @@ export class UsersService extends BaseService<User> {
       where: { username, deletedAt: IsNull() }
     });
   }
-
+  
   isValidPassword(password: string, hash: string) {
     return comparePasswordHelper(password, hash);
+  }
+
+  async updateUserToken(refreshToken: string, id: number) {
+    const user = await this.userRepository.findOne({ where: { id, deletedAt: IsNull() } });
+    if (!user) return null;
+
+    user.refreshToken = refreshToken;
+    return await this.userRepository.save(user);
   }
 
   findOne(id: number) {
