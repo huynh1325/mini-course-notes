@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+  backend:
+    build: ./backend
+    container_name: mini-notes-backend
+    ports:
+      - "4000:3000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DATABASE_URL=mysql://root:root@db:3306/mini_course_notes
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: mini-notes-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+    environment:
+      - VITE_API_URL=http://localhost:4000
+    depends_on:
+      - backend
+
+  db:
+    image: mysql:8
+    container_name: mini-notes-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mini_course_notes
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
