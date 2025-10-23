@@ -12,7 +12,7 @@ export class AuthController {
     ) {}
 
     @Public()
-    @ResponseMessage("user login")
+    @ResponseMessage("Đăng nhập thành công!")
     @UseGuards(LocalAuthGuard)
     @Post('/login')
     handleLogin(@Req() req, @Res({ passthrough: true }) response: Response) {
@@ -20,7 +20,7 @@ export class AuthController {
     }
 
     @Public()
-    @ResponseMessage('Register a new user')
+    @ResponseMessage('Đăng ký thành công')
     @Post('/register')
     handleRegister(@Body() createUserDto: CreateUserDto) {
         return this.authService.createUser(createUserDto);
