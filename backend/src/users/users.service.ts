@@ -57,6 +57,16 @@ export class UsersService extends BaseService<User> {
     return await this.userRepository.save(user);
   }
 
+  async findUserByToken(refreshToken: string) {
+    return await this.userRepository.findOne({
+      where: { refreshToken },
+      select: {
+        id: true,
+        username: true,
+      }
+    });
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} user`;
   }

@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
+import { ResponseMessage } from 'src/decorator/customize';
 
 @Controller('courses')
 export class CoursesController {
@@ -13,8 +14,13 @@ export class CoursesController {
   }
 
   @Get()
-  findAll() {
-    return this.coursesService.findAll();
+  @ResponseMessage("Lấy danh sách khóa học có phân trang")
+  findAll(
+    @Query('current') currentPage: string,
+    @Query('pageSize') limit: string,
+    @Query() qs: string
+  ) {
+    return this.coursesService.findAll(+currentPage, +limit, qs);
   }
 
   @Get(':id')

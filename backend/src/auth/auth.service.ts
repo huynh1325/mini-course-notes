@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { User } from 'src/users/entities/user.entity';
@@ -63,5 +63,43 @@ export class AuthService {
             expiresIn: parseExpire(this.configService.get<string>("JWT_REFRESH_EXPIRE")),
         });
         return refresh_token
+    }
+
+    processNewToken = async (refreshToken: string, response: Response) => {
+        try {
+            this.jwtService.verify(refreshToken, {
+                secret: this.configService.get<string>("JWT_REFRESH_TOKEN_SECRET"),
+            })
+            let user = await this.usersService.findUserByToken(refreshToken);
+            if (user) {
+                const { id, username } = user;
+                const payload = {
+                    sub: 'token refresh',
+                    iss: 'from server',
+                    id,
+                    username,
+                };
+
+                const refresh_token = this.createRefreshToken(payload);
+        
+                await this.usersService.updateUserToken(refresh_token, id);
+
+                response.clearCookie("refresh_token");
+                response.cookie('refresh_token', refresh_token, {
+                httpOnly: true,
+                maxAge: parseExpire(this.configService.get<string>("JWT_REFRESH_EXPIRE")) * 1000
+            })
+        
+            return {
+                access_token: this.jwtService.sign(payload),
+                user: {
+                    id,
+                    username
+                }
+            };
+        }
+        } catch (error) {
+            throw new BadRequestException('Refresh token không hợp lệ, vui lòng đăng nhập')
+        }
     }
 }
