@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
@@ -10,6 +10,11 @@ export class NotesController {
   @Post()
   create(@Body() createNoteDto: CreateNoteDto) {
     return this.notesService.create(createNoteDto);
+  }
+
+  @Get('course/:id')
+  async getNotesByCourse(@Param('id', ParseIntPipe) id: number) {
+    return this.notesService.findByCourse(id);
   }
 
   @Get()
