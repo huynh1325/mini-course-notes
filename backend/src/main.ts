@@ -6,6 +6,8 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { TransformInterceptor } from './core/transform.interceptor';
 import cookieParser from 'cookie-parser'
+import * as express from 'express';
+import { join } from 'path';
 require('dotenv').config();
 
 async function bootstrap() {
@@ -18,6 +20,8 @@ async function bootstrap() {
   
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
+
+  app.use('/public', express.static(join(process.cwd(), 'public')));
 
   app.enableCors({
     "origin": true,

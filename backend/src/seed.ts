@@ -9,12 +9,11 @@ async function seed() {
     await dataSource.initialize();
     console.log('Database connected!');
 
-    // ------------------ Users ------------------
     const userRepo = dataSource.getRepository(User);
 
     const usersData = [
-      { username: 'alice', password: '123456' },
-      { username: 'bob', password: '123456' },
+      { username: 'huynh', password: '123456' },
+      { username: 'admin', password: '123456' },
     ];
 
     const users: User[] = [];
@@ -27,11 +26,78 @@ async function seed() {
     await userRepo.save(users);
     console.log('Users seeded');
 
-    // ------------------ Courses ------------------
     const courseRepo = dataSource.getRepository(Course);
     const coursesData = [
-      { name: 'React Basics', description: 'Learn React from scratch' },
-      { name: 'NestJS Advanced', description: 'Advanced NestJS concepts' },
+      {
+        name: 'React Basics',
+        description: 'Learn React from scratch',
+        thumbnail: 'http://localhost:8080/public/images/react-basics.jpg',
+      },
+      {
+        name: 'NestJS Advanced',
+        description: 'Advanced NestJS concepts',
+        thumbnail: 'http://localhost:8080/public/images/nestjs-advanced.png',
+      },
+      {
+        name: 'JavaScript Fundamentals',
+        description: 'Understand the basics of JavaScript programming',
+        thumbnail: 'http://localhost:8080/public/images/javascript-fundamentals.jpg',
+      },
+      {
+        name: 'TypeScript Mastery',
+        description: 'Deep dive into TypeScript for scalable apps',
+        thumbnail: 'http://localhost:8080/public/images/typescript-mastery.jpg',
+      },
+      {
+        name: 'Node.js Essentials',
+        description: 'Build server-side applications with Node.js',
+        thumbnail: 'http://localhost:8080/public/images/nodejs-essentials.png',
+      },
+      {
+        name: 'Express.js Crash Course',
+        description: 'Fast-paced introduction to Express.js',
+        thumbnail: 'http://localhost:8080/public/images/nodejs-essentials.png',
+      },
+      {
+        name: 'MongoDB for Developers',
+        description: 'Learn how to use MongoDB in modern applications',
+        thumbnail: 'http://localhost:8080/public/images/nodejs-essentials.png',
+      },
+      {
+        name: 'Docker for Beginners',
+        description: 'Containerize your applications using Docker',
+        thumbnail: 'http://localhost:8080/public/images/nestjs-advanced.png',
+      },
+      {
+        name: 'Microservices with NestJS',
+        description: 'Build and scale microservices using NestJS',
+        thumbnail: 'http://localhost:8080/public/images/nestjs-advanced.png',
+      },
+      {
+        name: 'React Hooks in Depth',
+        description: 'Master React Hooks and state management',
+        thumbnail: 'http://localhost:8080/public/images/react-basic.png',
+      },
+      {
+        name: 'Next.js Full Guide',
+        description: 'Learn Next.js for server-side rendering and SEO',
+        thumbnail: 'http://localhost:8080/public/images/react-basic.png',
+      },
+      {
+        name: 'RESTful API Design',
+        description: 'Best practices for designing REST APIs',
+        thumbnail: 'http://localhost:8080/public/images/typescript-mastery.png',
+      },
+      {
+        name: 'GraphQL Fundamentals',
+        description: 'Learn how to build APIs with GraphQL',
+        thumbnail: 'http://localhost:8080/public/images/typescript-mastery.png',
+      },
+      {
+        name: 'Git & GitHub Workflow',
+        description: 'Version control and collaboration using Git and GitHub',
+        thumbnail: 'http://localhost:8080/public/images/javascript-fundamentals.png',
+      },
     ];
 
     const courses = courseRepo.create(coursesData);

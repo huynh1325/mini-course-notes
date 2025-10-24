@@ -11,6 +11,9 @@ export class Course {
 
   @Column({ nullable: true })
   description: string;
+  
+  @Column({ type: 'varchar', nullable: true })
+  thumbnail: string | null;
 
   @OneToMany(() => Note, note => note.course)
   notes: Note[];

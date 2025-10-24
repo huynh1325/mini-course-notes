@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Init1761204575828 implements MigrationInterface {
-    name = 'Init1761204575828'
+export class Init1761277664710 implements MigrationInterface {
+    name = 'Init1761277664710'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE \`user\` CHANGE \`deletedAt\` \`deletedAt\` datetime(6) NULL`);
@@ -10,6 +10,7 @@ export class Init1761204575828 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`user\` CHANGE \`updatedBy\` \`updatedBy\` int NULL`);
         await queryRunner.query(`ALTER TABLE \`user\` CHANGE \`deletedBy\` \`deletedBy\` int NULL`);
         await queryRunner.query(`ALTER TABLE \`course\` CHANGE \`description\` \`description\` varchar(255) NULL`);
+        await queryRunner.query(`ALTER TABLE \`course\` CHANGE \`thumbnail\` \`thumbnail\` varchar(255) NULL`);
         await queryRunner.query(`ALTER TABLE \`course\` CHANGE \`deletedAt\` \`deletedAt\` datetime(6) NULL`);
         await queryRunner.query(`ALTER TABLE \`course\` CHANGE \`createdBy\` \`createdBy\` int NULL`);
         await queryRunner.query(`ALTER TABLE \`course\` CHANGE \`updatedBy\` \`updatedBy\` int NULL`);
@@ -45,6 +46,7 @@ export class Init1761204575828 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`course\` CHANGE \`updatedBy\` \`updatedBy\` int NULL DEFAULT 'NULL'`);
         await queryRunner.query(`ALTER TABLE \`course\` CHANGE \`createdBy\` \`createdBy\` int NULL DEFAULT 'NULL'`);
         await queryRunner.query(`ALTER TABLE \`course\` CHANGE \`deletedAt\` \`deletedAt\` datetime(6) NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`course\` CHANGE \`thumbnail\` \`thumbnail\` varchar(255) NULL DEFAULT 'NULL'`);
         await queryRunner.query(`ALTER TABLE \`course\` CHANGE \`description\` \`description\` varchar(255) NULL DEFAULT 'NULL'`);
         await queryRunner.query(`ALTER TABLE \`user\` CHANGE \`deletedBy\` \`deletedBy\` int NULL DEFAULT 'NULL'`);
         await queryRunner.query(`ALTER TABLE \`user\` CHANGE \`updatedBy\` \`updatedBy\` int NULL DEFAULT 'NULL'`);
