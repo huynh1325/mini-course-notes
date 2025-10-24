@@ -44,10 +44,12 @@ export interface INote {
   id: number;
   title: string;
   content: string;
-  imageUrl: string;
+  imageUrl: string | null;
   createdBy?: string;
   deletedAt?: boolean | null;
   createdAt?: string;
   updatedAt?: string;
+  userId: number;
+  courseId: number;
 }
 

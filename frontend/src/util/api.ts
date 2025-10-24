@@ -1,4 +1,4 @@
-import type { IBackendRes, IAccount, IUser, ICourse } from '../types/backend';
+import type { IBackendRes, IAccount, IUser, ICourse, INote } from '../types/backend';
 import axios from './axios-customize';
 
 /**
@@ -29,14 +29,28 @@ export const callGetCourses = (current = 1, pageSize = 5) => {
   return axios.get<IBackendRes<ICourse>>(`/api/v1/courses?current=${current}&pageSize=${pageSize}`)
 };
 
-export const callCreateCourse = (name: string, description: string, notes: string) => {
-  return axios.post<IBackendRes<ICourse>>('/api/v1/courses', { name, description, notes })
+/**
+ * 
+Module Note
+ */
+export const callCreateNote = (payload: {
+  title: string;
+  content?: string;
+  userId: number;
+  courseId: number;
+  imageUrl?: string;
+}) => {
+  return axios.post<IBackendRes<INote>>('/api/v1/notes', payload);
 };
 
-export const callUpdateCourse = (id: number, name: string, description: string, notes: string) => {
-  return axios.put<IBackendRes<ICourse>>(`/api/v1/courses/${id}`, { name, description, notes })
-};
+export const callGetNotesByCourse = (courseId: number) => {
+  return axios.get<IBackendRes<INote[]>>(`/api/v1/notes/course/${courseId}`);
+}
 
-export const callDeleteCourse = (id: number) => {
-  return axios.delete<IBackendRes<ICourse>>(`/api/v1/courses/${id}`)
-};
+export const callUpdateNote = (id: number, title?: string, content?: string, imageUrl?: string) => {
+  return axios.patch<IBackendRes<INote>>(`/api/v1/notes/${id}`, {title, content, imageUrl});
+}
+
+export const callDeleteNote = (id: number) => {
+  return axios.delete<IBackendRes<string>>(`/api/v1/notes/${id}`);
+}

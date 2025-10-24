@@ -2,7 +2,7 @@ import { Form, Input, Button, Card } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { callRegister } from '../util/api'; // bạn cần tạo API này tương tự callLogin
+import { callRegister } from '../util/api';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -21,7 +21,6 @@ const Register = () => {
         toast.success(res.message || "Đăng ký thành công!");
         navigate("/login");
     } else {
-        // 🔥 Chuẩn hóa message trước khi hiển thị
         const errMsg = Array.isArray(res?.message)
         ? res.message.join(', ')
         : res?.message || "Đăng ký thất bại!";

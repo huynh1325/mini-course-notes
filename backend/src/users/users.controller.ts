@@ -8,17 +8,6 @@ import { ResponseMessage } from 'src/decorator/customize';
 export class UsersController  {
   constructor(private readonly usersService: UsersService) {}
 
-  // @Post()
-  // @ResponseMessage('Create a new User')
-  // async create(@Body() createUserDto: CreateUserDto, @Req() req) {
-  //   const createdBy = req.user?.id || null;
-  //   let newUser = await this.usersService.create(createUserDto, createdBy);
-  //   return {
-  //     id: newUser?.id,
-  //     createAt: newUser?.createdAt,
-  //   };
-  // }
-
   @Get()
   findAll() {
     return this.usersService.findAll();
