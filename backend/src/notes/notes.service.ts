@@ -2,10 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Note } from './entities/note.entity';
 import { Repository } from 'typeorm';
+import { Note } from './entities/note.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Course } from 'src/courses/entities/course.entity';
+import { FileService } from '../file/file.service';
 
 @Injectable()
 export class NotesService {
@@ -18,6 +19,8 @@ export class NotesService {
 
     @InjectRepository(Course)
     private readonly courseRepository: Repository<Course>,
+
+    private readonly fileService: FileService,
   ) {}
 
     async create(createNoteDto: CreateNoteDto) {

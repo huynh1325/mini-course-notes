@@ -44,7 +44,7 @@ export interface INote {
   id: number;
   title: string;
   content: string;
-  imageUrl: string | null;
+  imageUrl: string;
   createdBy?: string;
   deletedAt?: boolean | null;
   createdAt?: string;

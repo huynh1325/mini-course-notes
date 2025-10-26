@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { Button, Table, message, Form, Modal, Input, List, Space } from "antd";
+import { Button, Table, Form, Modal, Input, List, Space, Upload } from "antd";
 import { callGetCourses, callCreateNote, callGetNotesByCourse, callDeleteNote, callUpdateNote } from "../util/api";
 import type { ICourse, IMeta, INote } from "../types/backend";
+import { toast } from "react-toastify";
+import { UploadOutlined } from "@ant-design/icons";
 
 const Home = () => {
     const [courses, setCourses] = useState<ICourse[]>([]);
@@ -16,8 +18,9 @@ const Home = () => {
     const [selectedCourse, setSelectedCourse] = useState<ICourse | null>(null);
     const [notes, setNotes] = useState<INote[]>([]);
     const [form] = Form.useForm();
+    const [uploadImageUrl, setUploadImageUrl] = useState<string>("");
+    const [editImageUrl, setEditImageUrl] = useState<string>("");
 
-    // --- Edit modal state ---
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editingNote, setEditingNote] = useState<INote | null>(null);
     const [editForm] = Form.useForm();
@@ -29,11 +32,11 @@ const Home = () => {
                 setCourses(res.data.result);
                 setMeta(res.data.meta);
             } else {
-                message.error("Không có dữ liệu khóa học");
+                toast.error("Không có dữ liệu khóa học");
             }
         } catch (err) {
             console.error(err);
-            message.error("Không thể tải danh sách khóa học");
+            toast.error("Không thể tải danh sách khóa học");
         }
     };
 
@@ -51,7 +54,7 @@ const Home = () => {
             }
         } catch (err) {
             console.error(err);
-            message.error("Không thể tải ghi chú");
+            toast.error("Không thể tải ghi chú");
         }
     };
 
@@ -67,32 +70,35 @@ const Home = () => {
             const values = await form.validateFields();
             const title = values.title?.toString().trim() || "";
             const content = values.content?.toString().trim() || "";
+            const imageUrl = uploadImageUrl || "";
+
             const res = await callCreateNote({
                 title,
                 content,
                 userId: 1,
                 courseId: selectedCourse.id,
-                imageUrl: "",
+                imageUrl,
             });
             if (!res.data) {
-                message.error("Thêm ghi chú thất bại");
+                toast.error(res.message || "Thêm ghi chú thất bại");
                 return;
             }
             setNotes(prev => [...prev, res.data]);
             form.resetFields();
-            message.success("Thêm ghi chú thành công");
+            toast.success(res.message || "Thêm ghi chú thành công");
+            setUploadImageUrl("");
         } catch (err: any) {
             console.error(err);
-            message.error("Thêm ghi chú thất bại");
+            toast.error("Lỗi từ server");
         }
     };
 
-    // --- Mở modal edit ---
     const openEditModal = (note: INote) => {
         setEditingNote(note);
         editForm.setFieldsValue({
             title: note.title,
             content: note.content,
+            imageUrl: note.imageUrl || "",
         });
         setIsEditModalOpen(true);
     };
@@ -104,26 +110,28 @@ const Home = () => {
             const values = await editForm.validateFields();
             const title = values.title?.toString().trim() || editingNote.title;
             const content = values.content?.toString().trim() || editingNote.content;
+            const imageUrl = editImageUrl || editingNote.imageUrl;
 
             const res = await callUpdateNote(
                 editingNote.id,
                 title,
                 content,
-                editingNote.imageUrl
+                imageUrl,
             );
 
             if (!res.data) {
-                message.error("Cập nhật ghi chú thất bại");
+                toast.error(res.message || "Cập nhật ghi chú thất bại");
                 return;
             }
 
             setNotes(prev => prev.map(n => n.id === editingNote.id ? res.data! : n));
             setIsEditModalOpen(false);
+            setEditImageUrl("");
             setEditingNote(null);
-            message.success("Cập nhật ghi chú thành công");
+            toast.success(res.message || "Cập nhật ghi chú thành công");
         } catch (err) {
             console.error(err);
-            message.error("Cập nhật ghi chú thất bại");
+            toast.error("Cập nhật ghi chú thất bại");
         }
     };
 
@@ -131,9 +139,10 @@ const Home = () => {
         try {
             await callDeleteNote(id);
             setNotes(prev => prev.filter(n => n.id !== id));
+            toast.success(res.message || "Xóa ghi chú thành công")
         } catch (err) {
             console.error(err);
-            message.error("Xóa ghi chú thất bại");
+            toast.error("Xóa ghi chú thất bại");
         }
     };
 
@@ -164,7 +173,6 @@ const Home = () => {
                 }}
             />
 
-            {/* --- Notes Modal --- */}
             <Modal
                 open={isNoteModalOpen}
                 title={`Ghi chú cho khóa học: ${selectedCourse?.name}`}
@@ -177,6 +185,29 @@ const Home = () => {
                     </Form.Item>
                     <Form.Item name="content" rules={[{ required: true, message: "Nhập nội dung ghi chú" }]}>
                         <Input placeholder="Nội dung ghi chú" style={{ width: 220 }} />
+                    </Form.Item>
+                    <Form.Item label="Ảnh mô tả" name="imageUrl" valuePropName="fileList" getValueFromEvent={() => null}>
+                        <Upload
+                            beforeUpload={(file) => {
+                                const reader = new FileReader();
+                                reader.onload = (e) => {
+                                    setUploadImageUrl(e.target?.result as string);
+                                };
+                                reader.readAsDataURL(file);
+                                return false;
+                            }}
+                            maxCount={1}
+                            showUploadList={true}
+                        >
+                            <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+                        </Upload>
+                        {uploadImageUrl && (
+                            <img
+                                src={uploadImageUrl}
+                                alt="preview"
+                                style={{ width: 100, marginTop: 8, borderRadius: 6 }}
+                            />
+                        )}
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary" onClick={handleAddNote} style={{ marginTop: 12 }}>Thêm ghi chú</Button>
@@ -198,13 +229,19 @@ const Home = () => {
                             <Space direction="vertical">
                                 <strong>{note.title}</strong>
                                 <span>{note.content}</span>
+                                {note.imageUrl && (
+                                    <img
+                                        src={note.imageUrl}
+                                        alt="note"
+                                        style={{ width: 100, borderRadius: 6 }}
+                                    />
+                                )}
                             </Space>
                         </List.Item>
                     )}
                 />
             </Modal>
 
-            {/* --- Edit Note Modal --- */}
             <Modal
                 open={isEditModalOpen}
                 title="Sửa ghi chú"
@@ -225,6 +262,29 @@ const Home = () => {
                         rules={[{ required: true, message: "Nhập nội dung ghi chú" }]}
                     >
                         <Input.TextArea rows={4} />
+                    </Form.Item>
+                    <Form.Item label="Ảnh mô tả" name="imageUrl" valuePropName="fileList" getValueFromEvent={() => null}>
+                        <Upload
+                            beforeUpload={(file) => {
+                                const reader = new FileReader();
+                                reader.onload = (e) => {
+                                    setEditImageUrl(e.target?.result as string);
+                                };
+                                reader.readAsDataURL(file);
+                                return false;
+                            }}
+                            maxCount={1}
+                            showUploadList={true}
+                        >
+                            <Button icon={<UploadOutlined />}>Chọn ảnh mới</Button>
+                        </Upload>
+                        {(editImageUrl || editingNote?.imageUrl) && (
+                            <img
+                                src={editImageUrl || editingNote?.imageUrl}
+                                alt="preview"
+                                style={{ width: 100, marginTop: 8, borderRadius: 6 }}
+                            />
+                        )}
                     </Form.Item>
                 </Form>
             </Modal>
